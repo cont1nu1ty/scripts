@@ -2,7 +2,8 @@
 
 # --- 1. 网络与基础工具 ---
 # 增加 msr-tools 用于后续 CPU 解锁
-yay -S --noconfirm v2rayn-bin google-chrome msr-tools
+# 增加 cpupower 用于实时监控和手动切换 CPU 调节器（Governor）
+yay -S --noconfirm v2rayn-bin google-chrome msr-tools cpupower
 
 # --- 2 & 4. 安装 Fcitx5 与 RIME 雾凇小鹤版 ---
 sudo pacman -S --noconfirm fcitx5 fcitx5-gtk fcitx5-qt fcitx5-configtool fcitx5-rime
@@ -34,9 +35,10 @@ ln -sf /usr/share/rime-data/double_pinyin_flypy.schema.yaml ~/.local/share/fcitx
 
 # --- 8 & 10. 安装 Steam 与 NVIDIA 驱动组件 ---
 # 增加 Intel 核显驱动补齐电源管理链条
+# 增加 intel-compute-runtime 提供 OpenCL 支持，用于一些加速计算任务
 yay -Syu --noconfirm steam vulkan-icd-loader nvidia-utils vulkan-tools \
     lib32-nvidia-utils lib32-vulkan-icd-loader nvidia-prime \
-    intel-media-driver vulkan-intel libva-intel-driver
+    intel-media-driver vulkan-intel libva-intel-driver intel-compute-runtime
 
 # --- 9. 游戏性能工具 ---
 yay -S --noconfirm proton-ge-custom-bin mangohud gamescope gamemode
@@ -44,7 +46,7 @@ yay -S --noconfirm proton-ge-custom-bin mangohud gamescope gamemode
 # --- 12. 修改 sudo 超时时间 ---
 sudo bash -c 'echo "Defaults timestamp_timeout = 480" > /etc/sudoers.d/10-timeout'
 
-# --- 13. CPU 性能解锁 (针对 13650HX 锁频 2.6GHz 问题，七彩虹笔记本个例问题) ---
+# --- 13. CPU 性能解锁 (针对 13650HX 锁频 2.6GHz 问题，个例问题勿用) ---
 echo "正在配置 CPU 性能解锁服务..."
 
 # 创建解锁服务文件
@@ -68,3 +70,6 @@ EOF'
 sudo systemctl daemon-reload
 sudo systemctl enable unlock-cpu.service
 sudo systemctl start unlock-cpu.service
+
+echo "--------------------------------------------------"
+echo "脚本执行完毕！"
