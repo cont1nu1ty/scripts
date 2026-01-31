@@ -60,6 +60,8 @@ Type=oneshot
 ExecStartPre=/usr/bin/modprobe msr
 # 1. 关闭睿频限制
 ExecStart=/usr/bin/bash -c "echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo"
+# 2. 设置温控墙为 85°C
+ExecStartPost=/usr/bin/wrmsr 0x1a2 0x0f640000
 RemainAfterExit=yes
 
 [Install]
