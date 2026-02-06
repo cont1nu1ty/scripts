@@ -53,15 +53,22 @@ echo "正在配置 CPU 性能解锁服务..."
 sudo bash -c 'cat <<EOF > /etc/systemd/system/unlock-cpu.service
 [Unit]
 Description=Unlock 13650HX Turbo and BDPROCHOT
-After=multi-user.target suspend.target
+After=multi-user.target
+After=suspend.target
 
 [Service]
 Type=oneshot
 ExecStartPre=/usr/bin/modprobe msr
-# 1. 关闭睿频限制
-ExecStart=/usr/bin/bash -c "echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo"
-# 2. 设置温控墙为 85°C
-ExecStartPost=/usr/bin/wrmsr 0x1a2 0x0f640000
+# 开启睿频P
+ExecStart=/usr/bin/wrmsr 0x1FC 0xe8005e
+# 设置温控墙为 85°C (基于 TjMax 100, Offset 15 hex=0F)
+ExecStartPost=/usr/bin/wrmsr 0x1a2 0x0c640000
+# 限制长时功耗为 55W (防止 13650HX 瞬时热爆)
+ExecStartPost=/usr/bin/bash -c "echo 55000000 > /sys/class/powercap/intel-rapl:0/constraint_0_power_limit_uw"
+# 设置短时功耗为 157W 以允许睿频
+ExecStartPost=/usr/bin/bash -c "echo 157000000 > /sys/class/powercap/intel-rapl:0/constraint_1_power_limit_uw"
+# 启用睿频 (如果被禁用)
+ExecStartPost=/bin/echo 0 > /sys/devices/system/cpu/intel_pstate/no_turbo
 RemainAfterExit=yes
 
 [Install]
