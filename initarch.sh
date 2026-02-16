@@ -137,3 +137,15 @@ echo "2. 检查 nvidia-smi 是否正常"
 echo "3. fcitx5 配置 → 添加 RIME 输入法 → 右键托盘图标 Deploy"
 echo "4. envycontrol -s hybrid （推荐） 或 nvidia 模式，重启"
 echo "如果有问题，运行 inxi -Fxxxz 贴出来排查。"
+
+# --- 代理配置（v2rayN mixed port） ---
+cat <<EOF >> ~/.bashrc
+
+# v2rayN proxy
+export http_proxy=http://127.0.0.1:10808
+export https_proxy=http://127.0.0.1:10808
+export ALL_PROXY=socks5://127.0.0.1:10808
+export no_proxy="localhost,127.0.0.1,::1"
+
+EOF
+source ~/.bashrc
