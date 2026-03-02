@@ -64,6 +64,16 @@ cat <<EOF > "$RIME_DIR/default.custom.yaml"
 patch:
   schema_list:
     - schema: double_pinyin_flypy
+  
+  # 关键点：这一行必须存在，表示引入基础的按键定义
+  ascii_composer/import_preset: default
+  
+  # 重新定义切换键行为
+  ascii_composer/switch_key:
+    Shift_L: commit_code  # 重点：这会截断输入，将已打出的编码上屏并切到英文
+    Shift_R: noop         # 禁用右 Shift 切换，避免误触
+    Control_L: noop
+    Control_R: noop
 EOF
 
 # 符号链接雾凇核心文件（rime-ice 包提供）
